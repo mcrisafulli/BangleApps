@@ -45,11 +45,15 @@ function hand(rad, r1, r2) {
 }
 
 function onSecond() {
-  // erase last hours hand
   g.setColor(Color.bkg);
-  drawHoursHand();
+  // erase last hours hand
+  if (currentDate.getMinutes() == 59) {
+    drawHoursHand();
+  }
   // erase last minutes hand
-  drawMinutesHand();
+  if (currentDate.getSeconds() == 59) {
+    drawMinutesHand();
+  }
   // erase last seconds hand
   secondHand(currentDate.getSeconds());
   // redraw clock
@@ -68,6 +72,7 @@ function onSecond() {
   g.setColor(Color.secHand);
   secondHand(currentDate.getSeconds());
 }
+
 
 function drawMinutesHand() {
   hand((currentDate.getMinutes() * 6), -10, Radius.min);
