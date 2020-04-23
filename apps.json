@@ -1479,7 +1479,7 @@
       {"name":"pong.img","url":"app-icon.js","evaluate":true}
     ]
   },
-  { "id": "cclock",
+  { "id": "chronoclock",
     "name": "Chronograph Clock",
     "shortName": "Chrono Clock",
     "icon": "app.png",
