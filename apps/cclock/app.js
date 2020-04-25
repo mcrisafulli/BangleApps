@@ -3,6 +3,7 @@ const Radius = { "center": 3, "hour": 78, "min": 95, "sec": 102 };
 const Center = { "x": 120, "y": 132 };
 const Color = { "bkg": 0, "sec": "#4c4cFF", "secHand": "#FF1D1D", "hand": -1, "date": -1 };
 let currentDate = new Date();
+let timer = null;
 
 function rotatePoint(x, y, r) {
     rad = -1 * r / 180 * Math.PI;
@@ -100,11 +101,14 @@ function drawClock() {
   for (let i = 0; i < 60; i++) {
     seconds(i);
   }
-  setInterval(onSecond, 1000);
+  timer = setInterval(onSecond, 1000);
 }
 
 Bangle.on('lcdPower', function(on) {
   if (on)
+    if (timer) {
+      clearInterval(timer);
+    }
     drawClock();
 });
 
