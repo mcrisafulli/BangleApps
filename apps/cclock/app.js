@@ -2,11 +2,15 @@ var locale = require("locale");
 const Radius = { "center": 3, "hour": 78, "min": 95, "sec": 102 };
 const Center = { "x": 120, "y": 132 };
 const Color = { "bkg": 0, "sec": "#4c4cFF", "secHand": "#FF1D1D", "hand": -1, "date": -1 };
-let currentDate = new Date();
+const p1 = Math.PI / 2;
+const r3 = 3;
+const pRad = Math.PI / 180;
+let currentDate = null;
+let oldDate = null;
 let timer = null;
 
 function rotatePoint(x, y, r) {
-    rad = -1 * r / 180 * Math.PI;
+    rad = -1 * r * pRad;
     var sin = Math.sin(rad);
     var cos = Math.cos(rad);
     xn = ((Center.x + x * cos - y * sin) + 0.5) | 0;
@@ -30,9 +34,7 @@ function secondHand(i) {
 }
 
 function hand(rad, r1, r2) {
-  const p1 = Math.PI / 2;
-  const r3 = 3;
-  a = rad * (Math.PI / 180);
+  a = rad * pRad;
   g.fillPoly([
     Math.round(Center.x + Math.sin(a) * r1),
     Math.round(Center.y - Math.cos(a) * r1),
@@ -48,19 +50,22 @@ function hand(rad, r1, r2) {
 function onSecond() {
   g.setColor(Color.bkg);
   // erase last hours hand
-  if (currentDate.getMinutes() == 59) {
+  if (oldDate != currentDate && currentDate.getMinutes() == 59 && currentDate.getSeconds() == 59) {
     drawHoursHand();
   }
   // erase last minutes hand
-  if (currentDate.getSeconds() == 59) {
+  if (oldDate != currentDate && currentDate.getSeconds() == 59) {
     drawMinutesHand();
   }
   // erase last seconds hand
-  secondHand(currentDate.getSeconds());
+  if (oldDate != currentDate) {
+    secondHand(currentDate.getSeconds());
+  }
   // redraw clock
   g.setColor(Color.sec);
   seconds(currentDate.getSeconds());
 
+  oldDate = currentDate;
   currentDate = new Date();
   // draw seconds hand
   g.setColor(Color.hand);
@@ -74,13 +79,12 @@ function onSecond() {
   secondHand(currentDate.getSeconds());
 }
 
-
 function drawMinutesHand() {
   hand((currentDate.getMinutes() * 6), -10, Radius.min);
 }
 
 function drawHoursHand() {
-  hand((360 * (currentDate.getHours() + Date().getMinutes() / 60)) / 12, -10, Radius.hour);
+  hand((360 * (currentDate.getHours() + currentDate.getMinutes() / 60)) / 12, -10, Radius.hour);
 }
 
 function drawDate() {
