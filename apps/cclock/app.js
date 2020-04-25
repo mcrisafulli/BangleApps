@@ -5,8 +5,8 @@ const Color = { "bkg": 0, "sec": "#4c4cFF", "secHand": "#FF1D1D", "hand": -1, "d
 const p1 = Math.PI / 2;
 const r3 = 3;
 const pRad = Math.PI / 180;
-let currentDate = null;
-let oldDate = null;
+let currentDate = new Date();
+let oldDate = new Date();
 let timer = null;
 
 function rotatePoint(x, y, r) {
