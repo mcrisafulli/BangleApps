@@ -30,7 +30,7 @@ function secondHand(i) {
   point1 = rotatePoint(0, -20, i * 6);
   point2 = rotatePoint(0, Radius.sec, i * 6);
   g.drawLine(point1[0], point1[1], point2[0], point2[1]);
-  g.fillCircle(Center.x, Center.y, Radius.center);
+  //g.fillCircle(Center.x, Center.y, Radius.center);
 }
 
 function hand(rad, r1, r2) {
@@ -48,55 +48,55 @@ function hand(rad, r1, r2) {
 }
 
 function onSecond() {
+  oldDate = currentDate;
+  currentDate = new Date();
   g.setColor(Color.bkg);
   // erase last hours hand
-  if (oldDate != currentDate && currentDate.getMinutes() == 59 && currentDate.getSeconds() == 59) {
-    drawHoursHand();
+  if (oldDate.getSeconds() != currentDate.getSeconds() && currentDate.getMinutes() == 0 && currentDate.getSeconds() == 0) {
+    drawHoursHand(oldDate);
   }
   // erase last minutes hand
-  if (oldDate != currentDate && currentDate.getSeconds() == 59) {
-    drawMinutesHand();
+  if (oldDate.getSeconds() != currentDate.getSeconds() && currentDate.getSeconds() == 0) {
+    drawMinutesHand(oldDate);
   }
   // erase last seconds hand
-  if (oldDate != currentDate) {
-    secondHand(currentDate.getSeconds());
+  if (oldDate.getSeconds() != currentDate.getSeconds()) {
+    secondHand(oldDate.getSeconds());
   }
   // redraw clock
   g.setColor(Color.sec);
-  seconds(currentDate.getSeconds());
+  seconds(oldDate.getSeconds());
 
-  oldDate = currentDate;
-  currentDate = new Date();
   // draw seconds hand
   g.setColor(Color.hand);
   // draw Date
   drawDate();
   // draw hours hand
-  drawHoursHand();
+  drawHoursHand(currentDate);
   // draw minutess hand
-  drawMinutesHand();
+  drawMinutesHand(currentDate);
   g.setColor(Color.secHand);
   secondHand(currentDate.getSeconds());
 }
 
-function drawMinutesHand() {
-  hand((currentDate.getMinutes() * 6), -10, Radius.min);
+function drawMinutesHand(date) {
+  hand((date.getMinutes() * 6), -10, Radius.min);
 }
 
-function drawHoursHand() {
-  hand((360 * (currentDate.getHours() + currentDate.getMinutes() / 60)) / 12, -10, Radius.hour);
+function drawHoursHand(date) {
+  hand((360 * (date.getHours() + date.getMinutes() / 60)) / 12, -10, Radius.hour);
 }
 
 function drawDate() {
   g.setColor(Color.date);
-  g.setFont('6x8', 1);
+  g.setFont('6x8', 2);
 
   const dayString = locale.dow(currentDate, true);
   // pad left date
   const dateString = (currentDate.getDate() < 10 ? '0' : '') + currentDate.getDate().toString();
   const dateDisplay = `${dayString} ${dateString}`;
   const l = Center.x + (102 - g.stringWidth(dateDisplay)) / 2;
-  const t = Center.y -4;
+  const t = Center.y -8;
   g.drawString(dateDisplay, l, t, false);
 }
 
