@@ -52,7 +52,7 @@ function onSecond() {
   currentDate = new Date();
   g.setColor(Color.bkg);
   // erase last hours hand
-  if (oldDate.getSeconds() != currentDate.getSeconds() && currentDate.getMinutes() == 0 && currentDate.getSeconds() == 0) {
+  if (oldDate.getMinutes() != currentDate.getMinutes() && currentDate.getSeconds() == 0) {
     drawHoursHand(oldDate);
   }
   // erase last minutes hand
