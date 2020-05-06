@@ -1,13 +1,13 @@
 var locale = require("locale");
-const Radius = { "center": 3, "hour": 78, "min": 95, "sec": 102 };
+const Radius = { "center": 3, "hour": 70, "min": 90, "sec": 102 };
 const Center = { "x": 120, "y": 132 };
-const Color = { "bkg": 0, "sec": "#4c4cFF", "secHand": "#FF1D1D", "hand": -1, "date": -1 };
+const Color = { "bkg": 0, "sec": "#6f6fFF", "secHand": "#FF1D1D", "hand": -1, "date": -1 };
 const p1 = Math.PI / 2;
 const r3 = 3;
 const pRad = Math.PI / 180;
-let currentDate = new Date();
-let oldDate = new Date();
-let timer = null;
+var currentDate = new Date();
+var oldDate = new Date();
+var timer;
 
 function rotatePoint(x, y, r) {
     rad = -1 * r * pRad;
@@ -51,14 +51,12 @@ function onSecond() {
   oldDate = currentDate;
   currentDate = new Date();
   g.setColor(Color.bkg);
-  // erase last hours hand
-  if (oldDate.getMinutes() != currentDate.getMinutes() && currentDate.getSeconds() == 0) {
+  // erase last hours hand and last minutes hand
+  if (oldDate.getMinutes() != currentDate.getMinutes()) {
     drawHoursHand(oldDate);
-  }
-  // erase last minutes hand
-  if (oldDate.getSeconds() != currentDate.getSeconds() && currentDate.getSeconds() == 0) {
     drawMinutesHand(oldDate);
   }
+
   // erase last seconds hand
   if (oldDate.getSeconds() != currentDate.getSeconds()) {
     secondHand(oldDate.getSeconds());
@@ -105,19 +103,30 @@ function drawClock() {
   for (let i = 0; i < 60; i++) {
     seconds(i);
   }
-  timer = setInterval(onSecond, 1000);
 }
 
 Bangle.on('lcdPower', function(on) {
-  if (on)
+  if (timer) {
+    clearInterval(timer);
+    timer = undefined;
+  }
+  if (on) {
     if (timer) {
       clearInterval(timer);
+      timer = undefined;
     }
     drawClock();
+    timer = setInterval(onSecond, 1000);
+  }
 });
 
 g.clear();
 drawClock();
+if (timer) {
+  clearInterval(timer);
+  timer = undefined;
+}
+timer = setInterval(onSecond, 1000);
 Bangle.loadWidgets();
 Bangle.drawWidgets();
 
